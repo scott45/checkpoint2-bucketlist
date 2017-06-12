@@ -1,5 +1,3 @@
-__author__ = 'scotty'
-
 import unittest
 
 import json
