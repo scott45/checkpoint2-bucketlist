@@ -1,4 +1,6 @@
 from flask import Flask
+from application.v1 import bucketlist
+from flask_sqlalchemy import SQLAlchemy
 
 from instance.config import application_configuration
 
@@ -10,4 +12,4 @@ def EnvironmentName(environment):
 
 
 EnvironmentName('DevelopmentEnvironment')
-from application.v1 import bucketlist
+databases = SQLAlchemy(app)
