@@ -1,5 +1,5 @@
 import unittest
-from application import application
+from application import app, EnvironmentName
 
 import json
 
