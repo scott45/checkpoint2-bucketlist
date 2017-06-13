@@ -1,4 +1,5 @@
 import unittest
+from application import application
 
 import json
 
@@ -11,22 +12,15 @@ class AuthenticationTestCases(unittest.TestCase):
         pass
 
     def test_register_successfully(self):
-        pass
-
-    def test_registration_route(self):
-        pass
-
-    def test_wrong_registration_route(self):
-        pass
-
-    def test_invalid_username(self):
-        pass
-
-    def test_wrong_password(self):
-        pass
+        payload = json.dumps({'username': 'scott', 'password': 'something'})
+        response = self.application.post('/bucketlist/api/v1/auth/register', data=payload)
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('Registration successful', response.data.decode('utf-8'))
 
     def test_register_without_password(self):
-        pass
+        payload = json.dumps({'username': 'scott', 'password': ''})
+        response = self.application.post('/bucketlist/api/v1/auth/register', data=payload)
+        self.assertIn("Password field is blank", response.data.decode('utf-8'))
 
     def test_register_with_special_characters(self):
         pass
@@ -34,10 +28,29 @@ class AuthenticationTestCases(unittest.TestCase):
     def register_without_username(self):
         pass
 
-    def register_test_with_existing_username(self):
+    def test_register_with_existing_username(self):
         pass
 
-    def test_with_short_password(self):
+    def test_register_with_short_password(self):
+        pass
+
+    def test_registration_route(self):
+        payload = json.dumps({'username': 'scott', 'password': 'something'})
+        response = self.application.post('/bucketlist/api/v1/auth/register', data=payload)
+        self.assertEqual(response.status_code, 200)
+
+    def test_wrong_registration_route(self):
+        payload = json.dumps({'username': 'scott', 'password': 'something'})
+        response = self.application.post('/bucketlist/api/v1/auth/regstr', data=payload)
+        self.assertAlmostEqual(response.status_code, 404)
+
+    def test_login__with_invalid_username(self):
+        payload = json.dumps({'username': 'sctt', 'password': 'something'})
+        response = self.applications.post('/bucketlist/api/v1/auth/register', data=payload)
+        self.assertAlmostEqual(response.status_code, 404)
+        self.assertIn("Unknown username, please enter a valid username", response.data.decode('utf-8'))
+
+    def test_login_with_wrong_password(self):
         pass
 
     def test_login_successful(self):
