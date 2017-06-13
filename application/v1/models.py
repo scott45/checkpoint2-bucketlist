@@ -41,6 +41,7 @@ class BucketList(databases.Model):
 
 
 class Items(databases.Model):
+    __tablename__ = 'BucketlistItems'
     id = databases.Column(databases.Integer, primary_key=True, autoincrement=True)
     name = databases.Column(databases.String(200))
     date_created = databases.Column(databases.DateTime, default=datetime.utcnow())
@@ -55,3 +56,5 @@ class Items(databases.Model):
         databases.session.add(self)
         databases.session.commit()
 
+    def __repr__(self):
+        return '<Items {}'.format(self.name)
