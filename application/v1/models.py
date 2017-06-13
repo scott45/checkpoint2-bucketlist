@@ -9,17 +9,17 @@ class Users(databases.Model):
     id = databases.Column(databases.Integer, primary_key=True, autoincrement=True)
     Bucket = databases.relationship('BucketList', backref='User')
     username = databases.Column(databases.String(100))
-    password_hash = databases.Column(databases.String(200))
+    new_password = databases.Column(databases.String(200))
 
     def save(self):
         databases.session.add(self)
         databases.session.commit()
 
     def hash_password(self, password):
-        self.hashed_password = pwd_context.encrypt(password)
+        self.new_password = pwd_context.encrypt(password)
 
     def verify_password(self, password):
-        return pwd_context.verify(password, self.hashed_password)
+        return pwd_context.verify(password, self.new_password)
 
 
 class BucketList(databases.Model):
@@ -37,4 +37,4 @@ class BucketList(databases.Model):
 
     def save(self):
         databases.session.add(self)
-        databases.session.commit
+        databases.session.commit()
