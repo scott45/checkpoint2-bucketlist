@@ -55,7 +55,7 @@ class AuthenticationTestCases(unittest.TestCase):
         payload = json.dumps({'username': 'scott', 'password': 'something'})
         response = self.app.post('/bucketlist/api/v1/auth/regstr', data=payload)
         self.assertAlmostEqual(response.status_code, 404)
-        
+
     def test_login_successful(self):
         payload = json.dumps({'username': 'scott', 'password': 'scott'})
         self.app.post('/bucketlist/api/v1/auth/register', data=payload)
@@ -79,13 +79,28 @@ class AuthenticationTestCases(unittest.TestCase):
         self.assertIn("Incorrect password, please enter a valid password", response.data.decode('utf-8'))
 
     def test_login_blank_password(self):
-        pass
+        payload = json.dumps({'username': 'scott', 'password': ''})
+        response = self.app.post('/bucketlist/api/v1/auth/login', data=payload)
+        self.assertAlmostEqual(response.status_code, 400)
+        self.assertIn("login unsuccessful, password field is empty", response.data.decode('utf-8'))
 
     def test_login_blank_username(self):
-        pass
+        payload = json.dumps({'username': '', 'password': 'something'})
+        response = self.app.post('/bucketlist/api/v1/auth/login', data=payload)
+        self.assertAlmostEqual(response.status_code, 400)
+        self.assertIn("login unsuccessful, username field is empty", response.data.decode('utf-8'))
 
     def test_login_with_invalid_details(self):
-        pass
+        payload = json.dumps({'username': 'scott', 'password': 'something'})
+        self.app.post('/bucketlist/api/v1/auth/register', data=payload)
+        payload = json.dumps({'username': 'scot', 'password': 'somethings'})
+        response = self.app.post('/bucketlist/api/v1/auth/login', data=payload)
+        self.assertAlmostEqual(response.status_code, 400)
+        self.assertIn("Incorrect login credentials, please enter a valid username and password",
+                      response.data.decode('utf-8'))
 
     def test_login_with_special_characters_username(self):
-        pass
+        payload = json.dumps({'username': '#$^57dvcg', 'password': 'something'})
+        response = self.app.post('/bucketlist/api/v1/auth/login', data=payload)
+        self.assertAlmostEqual(response.status_code, 400)
+        self.assertIn("login unsuccessful, username contains special characters", response.data.decode('utf-8'))
