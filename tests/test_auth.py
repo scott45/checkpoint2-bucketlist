@@ -1,4 +1,6 @@
 import unittest
+
+# from config file
 from app import app, EnvironmentName, databases
 
 import json
@@ -6,8 +8,10 @@ import json
 
 class AuthenticationTestCases(unittest.TestCase):
     def setUp(self):
+
+        # testing client using testing environment
         self.app = app.test_client()
-        EnvironmentName('TestingConfig')
+        EnvironmentName('TestingEnvironment')
         databases.create_all()
 
     def tearDown(self):
