@@ -71,7 +71,7 @@ class AuthenticationTestCases(unittest.TestCase):
         self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         payload = json.dumps({'username': 'sctt', 'password': 'something'})
         response = self.app.post('/bucketlist/api/v1/auth/login', data=payload)
-        self.assertAlmostEqual(response.status_code, 400)
+        self.assertAlmostEqual(response.status_code, 401)
         self.assertIn("Unknown username, please enter a valid username", response.data.decode('utf-8'))
 
     def test_login_with_wrong_password(self):
@@ -79,7 +79,7 @@ class AuthenticationTestCases(unittest.TestCase):
         self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         payload = json.dumps({'username': 'scott', 'password': 'somethings'})
         response = self.app.post('/bucketlist/api/v1/auth/login', data=payload)
-        self.assertAlmostEqual(response.status_code, 400)
+        self.assertAlmostEqual(response.status_code, 401)
         self.assertIn("Incorrect password, please enter a valid password", response.data.decode('utf-8'))
 
     def test_login_blank_password(self):
