@@ -17,7 +17,7 @@ class BucketlistTestCases(unittest.TestCase):
         payload = json.dumps({'username': 'scott', 'password': 'bucketlist'})
         self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         credentials = self.app.post('/bucketlist/api/v1/auth/login', data=payload)
-        json_rep = json.loads(credentials.data)
+        json_rep = credentials.json()
 
         # creating a bucketlist for testing purpose
         self.token = json_rep['Token']
@@ -47,26 +47,38 @@ class BucketlistTestCases(unittest.TestCase):
                                  headers={"Authorization": self.token})
         self.assertIn('Bucketlist already exists', response.data.decode('utf-8'))
 
+    def test_get_bucketlist(self):
+        pass
+
+    def test_get_non_existence_bucketlist(self):
+        response = self.app.get('/bucketlist/api/v1/bucketlist',
+                                headers={"Authorization": self.token})
+        self.assertTrue(response.status_code == 200)
+        self.assertIn('No bucketlists have been created',
+                      response.data.decode('utf-8'))
+
+    def test_get_bucketlist_by_id(self):
+        response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
+                                 headers={"Authorization": self.token})
+        response = self.app.get('/bucketlist/api/v1/bucketlist/1',
+                                headers={"Authorization": self.token})
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_bucketlist_by_invalid_id(self):
+        response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
+                                 headers={"Authorization": self.token})
+        response = self.app.get('/bucketlist/api/v1/bucketlist/1',
+                                headers={"Authorization": self.token})
+        self.assertEqual(response.status_code, 404)
+
     def test__update_bucketlist(self):
         pass
 
-    def test_update_unexisting_bucketlist(self):
+    def test_update_non_existence_bucketlist(self):
         pass
 
     def test_delete_bucketlist(self):
         pass
 
-    def test_delete_unexisting_bucketlist(self):
-        pass
-
-    def test_get_bucketlist(self):
-        pass
-
-    def test_get_unexisting_bucketlist(self):
-        pass
-
-    def test_get_bucketlist_by_id(self):
-        pass
-
-    def test_get_bucketlist_by_invalid_id(self):
+    def test_delete_non_existence_bucketlist(self):
         pass
