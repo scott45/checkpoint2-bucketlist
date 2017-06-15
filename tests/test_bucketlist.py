@@ -98,6 +98,12 @@ class BucketlistTestCases(unittest.TestCase):
         response = self.app.delete('/bucketlist/api/v1/bucketlist/1',
                                    data=self.payloads, headers={"Authorization": self.token})
         self.assertTrue(response.status_code, 201)
+        self.assertIn("Successfully deleted.", response.data.decode('utf-8'))
 
     def test_delete_non_existence_bucketlist(self):
-        pass
+        response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
+                                 headers={"Authorization": self.token})
+        response = self.app.delete('/bucketlist/api/v1/bucketlist/3',
+                                   data=self.payloads, headers={"Authorization": self.token})
+        self.assertTrue(response.status_code, 404)
+        self.assertIn("The selected bucketlist doesn't exist", response.data.decode('utf-8'))
