@@ -1,4 +1,4 @@
 #!/usr/bin/env python3
-from app import app
+from api.__init__ import app
 
 app.run()
