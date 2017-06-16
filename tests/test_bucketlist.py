@@ -17,7 +17,7 @@ class BucketlistTestCases(unittest.TestCase):
         payload = json.dumps({'username': 'scott', 'password': 'bucketlist'})
         self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         credentials = self.app.post('/bucketlist/api/v1/auth/login', data=payload)
-        json_rep = credentials.json()
+        json_rep = json.loads(credentials.data)
 
         # creating a bucketlist for testing purpose
         self.token = json_rep['Token']
