@@ -84,8 +84,14 @@ class BucketlistItemsTestCases(unittest.TestCase):
                                    data=self.itempayloads, headers={"Authorization": self.token})
         self.assertIn("Bucketlistitem successfully deleted", response.data.decode('utf-8'))
 
-    def test_delete_unexisting_bucketlistitem(self):
-        pass
+    def test_delete_non_existent_bucketlistitem(self):
+        response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
+                                 headers={"Authorization": self.token})
+        response = self.app.post('bucketlist/api/v1/bucketlist/1/items',
+                                 data=self.itempayloads, headers={"Authorization": self.token})
+        response = self.app.delete('bucketlist/api/v1/bucketlist/3/items',
+                                   data=self.itempayloads, headers={"Authorization": self.token})
+        self.assertIn("Bucketlistitem doesn't exist", response.data.decode('utf-8'))
 
     def test_get_one_bucketlistitem(self):
         pass
