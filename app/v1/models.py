@@ -26,7 +26,7 @@ class BucketList(databases.Model):
     __tablename__ = 'Bucketlist'
     id = databases.Column(databases.Integer, primary_key=True, autoincrement=True)
     user = databases.Column(databases.Integer, databases.ForeignKey('User.id'))
-    name = databases.Column(databases.Strinag(150))
+    name = databases.Column(databases.String(150))
     date_created = databases.Column(databases.DateTime, default=datetime.utcnow())
     date_modified = databases.Column(databases.DateTime, default=datetime.utcnow(), onupdate=datetime.utcnow())
     created_by = databases.Column(databases.Integer())
