@@ -1,7 +1,7 @@
 import unittest
 
 # from config file
-from app import app, EnvironmentName, databases
+from api import app, EnvironmentName, databases
 
 import json
 
@@ -19,9 +19,9 @@ class BucketlistItemsTestCases(unittest.TestCase):
         self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         credentials = self.app.post('/bucketlist/api/v1/auth/login', data=payload)
         json_rep = json.loads(credentials.data)
+        self.token = json_rep['Token']
 
         # creating a bucketlist for testing purpose
-        self.token = json_rep['Token']
         self.payloads = json.dumps({'name': '1 Corinthians 13:13, Faith Hope and Love.'})
         self.itempayloads = json.dumps({'name': 'Romans 8:38, Nothing can separate us from the love of God.'})
 
