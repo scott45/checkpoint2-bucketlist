@@ -103,7 +103,11 @@ class BucketlistItemsTestCases(unittest.TestCase):
         self.assertIn("Bucketlistitem doesn't exist", response.data.decode('utf-8'))
 
     def test_get_one_bucketlistitem(self):
-        pass
+        response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
+                                 headers={"Authorization": self.token})
+        response = self.app.get('bucketlist/api/v1/bucketlist/1/items',
+                                 data=self.itempayloads, headers={"Authorization": self.token})
+        self.assertEqual(response.status_code, 200)
 
     def test_get_unexisting_bucketlistitem(self):
         pass
