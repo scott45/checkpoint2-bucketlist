@@ -111,11 +111,14 @@ class BucketlistItemsTestCases(unittest.TestCase):
                                 data=self.itempayloads, headers={"Authorization": self.token})
         self.assertEqual(response.status_code, 200)
 
-    def test_get_unexisting_bucketlistitem(self):
-        pass
+    def test_get_non_existent_bucketlistitem(self):
+        response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
+                                 headers={"Authorization": self.token})
+        response = self.app.post('bucketlist/api/v1/bucketlist/1/items',
+                                 data=self.itempayloads, headers={"Authorization": self.token})
+        response = self.app.get('bucketlist/api/v1/bucketlist/87/items',
+                                data=self.itempayloads, headers={"Authorization": self.token})
+        self.assertEqual(response.status_code, 404)
 
-    def test_get_bucketlist_by_id(self):
-        pass
-
-    def test_get_bucketlist_by_invalid_id(self):
+    def test_get_bucketlist_by_invalid_token(self):
         pass
