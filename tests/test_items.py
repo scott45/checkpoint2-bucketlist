@@ -48,16 +48,23 @@ class BucketlistItemsTestCases(unittest.TestCase):
                                  data=self.itempayloads, headers={"Authorization": self.token})
         self.assertEqual(response.status_code, 404)
 
-    def test_update_existing_bucketlistitem(self):
-        response = self.app.post('bucketlist/api/v1/bucketlist/1/items',
-                                 data=self.itempayloads, headers={"Authorization": self.token})
+    def test_edit_existing_bucketlistitem(self):
         response = self.app.post('bucketlist/api/v1/bucketlist/1/items',
                                  data=self.itempayloads, headers={"Authorization": self.token})
         self.itempayloads = json.dumps({'name': '1 john 4:8, God is Love.'})
+        response = self.app.post('bucketlist/api/v1/bucketlist/1/items',
+                                 data=self.itempayloads, headers={"Authorization": self.token})
         self.assertEqual(response.status_code, 200)
+        self.assertIn("Bucketlistitem successfully edited", response.data.decode('utf-8'))
 
-    def test_update_unexisting_bucketlistitem(self):
-        pass
+    def test_edit_non_existent_bucketlistitem(self):
+        response = self.app.post('bucketlist/api/v1/bucketlist/1/items',
+                                 data=self.itempayloads, headers={"Authorization": self.token})
+        self.itempayloads = json.dumps({'name': '1 john 4:8, God is Love.'})
+        response = self.app.post('bucketlist/api/v1/bucketlist/4/items',
+                                 data=self.itempayloads, headers={"Authorization": self.token})
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("Bucketlist doesn't exist", response.data.decode('utf-8'))
 
     def test_delete_bucketlistitem(self):
         pass
