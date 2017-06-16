@@ -37,6 +37,15 @@ class BucketlistItemsTestCases(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Bucketlistitem successfully created", response.data.decode('utf-8'))
 
+    def test_create_new_bucketlist_without_name(self):
+        response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
+                                 headers={"Authorization": self.token})
+        self.one = json.dumps({'name': ''})
+        response = self.app.post('bucketlist/api/v1/bucketlist/1/items',
+                                 data=self.one, headers={"Authorization": self.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Bucketlistitem successfully created", response.data.decode('utf-8'))
+
     def test_create_existing_bucketlistitem(self):
         response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
                                  headers={"Authorization": self.token})
@@ -44,9 +53,9 @@ class BucketlistItemsTestCases(unittest.TestCase):
                                  data=self.itempayloads, headers={"Authorization": self.token})
         response = self.app.post('bucketlist/api/v1/bucketlist/1/items',
                                  data=self.itempayloads, headers={"Authorization": self.token})
-        self.assertIn("Bucketlistitem already exists", response.data.decode('utf-8'))
+        self.assertIn("Bucketlistitem has no name", response.data.decode('utf-8'))
 
-    def test_create_items_for_unexisting_bucketlist(self):
+    def test_create_items_for_non_existent_bucketlist(self):
         response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
                                  headers={"Authorization": self.token})
         response = self.app.post('bucketlist/api/v1/bucketlist/7/items',
@@ -103,7 +112,4 @@ class BucketlistItemsTestCases(unittest.TestCase):
         pass
 
     def test_get_bucketlist_by_invalid_id(self):
-        pass
-
-    def test_create_new_bucketlist_without_title(self):
         pass
