@@ -3,7 +3,7 @@ import unittest
 import json
 
 # from config file
-from api import app, EnvironmentName, databases
+from api.__init__ import app, EnvironmentName, databases
 
 
 class BucketlistTestCases(unittest.TestCase):
