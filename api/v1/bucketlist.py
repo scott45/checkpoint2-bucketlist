@@ -46,3 +46,40 @@ def register():
         })
         response.status_code = 500
         return response
+
+
+@app.route('/bucketlist/api/v1/auth/login', methods=['POST'])
+def login():
+    request.get_json(force=True)
+    try:
+        name = request.json['username']
+        pass_word = request.json['password']
+        res = Users.query.filter_by(username=name)
+        user_name_check = [user.username for user in res if user.verify_password(pass_word) is True]
+        user_id = [user.id for user in res if name in user_name_check]
+        if not name:
+            response = jsonify({'error': 'Username field cannot be blank'})
+            response.status_code = 400
+            return response
+        elif not pass_word:
+            response = jsonify({'error': 'Password field cannot be blank'})
+            response.status_code = 400
+            return response
+        elif not re.match("^[a-zA-Z0-9_]*$", name):
+            response = jsonify({'error': 'Username cannot contain special characters'})
+            response.status_code = 400
+            return response
+        elif name in user_name_check:
+            payload = {"user_id": user_id, "exp": datetime.utcnow() + timedelta(minutes=60)}
+            token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+            response = jsonify({'Login status': 'Successfully Logged in ', 'Token': token.decode('utf-8')})
+            response.status_code = 200
+            return response
+        else:
+            response = jsonify({'Login status': 'Invalid credentials'})
+            response.status_code = 200
+            return response
+    except KeyError:
+        response = jsonify({'error': 'Please use username and password for dict keys.'})
+        response.status_code = 500
+        return response
