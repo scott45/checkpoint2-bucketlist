@@ -30,7 +30,7 @@ def register():
             res = Users.query.all()
             name_check = [r.username for r in res]
             if name in name_check:
-                response = jsonify({'Error': 'Username already taken, register another name.'})
+                response = jsonify({'Error': 'The Username already taken, register another name.'})
                 return response
             else:
                 user_data = Users(username=name)
