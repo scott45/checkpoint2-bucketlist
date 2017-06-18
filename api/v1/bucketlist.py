@@ -6,7 +6,7 @@ import jwt
 
 
 from api.__init__ import app, databases
-from api.v1.models import Users
+from api.v1.models import Users, BucketList, Items
 
 databases.create_all()
 
@@ -83,3 +83,60 @@ def login():
         response = jsonify({'error': 'Please use username and password for dict keys.'})
         response.status_code = 500
         return response
+
+
+def verify_token(request):
+    token = request.headers.get("Authorization")
+    if not token:
+        abort(401)
+    try:
+        payload = jwt.decode(token, app.config['SECRET_KEY'],
+                             algorithm='HS256')
+    except jwt.ExpiredSignatureError:
+        return jsonify({'Warning': 'Token is expired!'})
+    except jwt.InvalidTokenError:
+        response = jsonify({'error': 'Token is invalid'})
+        response.status_code = 401
+        return response
+    return payload
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
