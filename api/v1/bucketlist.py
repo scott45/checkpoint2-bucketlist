@@ -101,8 +101,31 @@ def verify_token(request):
     return payload
 
 
-
-
+@app.route('/bucketlist/api/v1/bucketlist', methods=['POST'])
+def login():
+    request.get_json(force=True)
+    try:
+        verification = verify_token(request)
+        if isinstance(verification, dict):
+            user_id = verification['user_id']
+        else:
+            return verification
+        b_name = request.json['name']
+        if not b_name:
+            response = jsonify({'Error': 'bucketlist has no name'})
+            response.status_code = 403
+            return response
+        else:
+            b = BucketList(name=b_name, created_by=user_id[0])
+            b.save()
+            response = jsonify({'status': 'Bucket added successfully'})
+            response.status_code = 201
+            return response
+    except KeyError:
+        response = jsonify({'Error': 'Use the name for dict key.'})
+        response.status_code = 500
+        return response
+        
 
 
 
