@@ -187,3 +187,88 @@ def retrieve_bucketlist():
                 response.status_code = 200
                 return response
 
+
+@app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>',
+           methods=['GET', 'PUT', 'DELETE'])
+def bucketlist_by_id(bucket_id):
+    payload = verify_token(request)
+    if isinstance(payload, dict):
+        user_id = payload['user_id']
+    else:
+        return payload
+    res = BucketList.query.all()
+    bucket_data = [bucket for bucket in res if bucket.id == bucket_id and bucket.created_by in user_id]
+    if request.method == 'GET':
+        data = {}
+        for data in bucket_data:
+            final_data = []
+            for item_data in data.items:
+                item_data = {
+                    'id': item_data.id,
+                    'name': item_data.name,
+                    'date-created': item_data.datecreated,
+                    'date_modified': item_data.date_modified,
+                }
+                final_data.append(item_data)
+            data = {
+                'id': data.id,
+                'name': data.name,
+                'date-created': data.date_created,
+                'date_modified': data.date_modified,
+                'items': final_data
+            }
+        if bucket_id not in data.values():
+            response = jsonify({'warning': 'the bucketlist does not exist.'})
+            response.status_code = 404
+            return response
+        else:
+            response = jsonify(data)
+            response.status_code = 200
+            return response
+    elif request.method == 'DELETE':
+        data = {}
+        for data in bucket_data:
+            data = {
+                'id': data.id,
+                'name': data.name,
+                'date-created': data.date_created,
+                'date_modified': data.date_modified
+            }
+        if bucket_id not in data.values():
+            response = jsonify({'warning': 'the bucketlist does not exist.'})
+            response.status_code = 404
+            return response
+        else:
+            delete = BucketList.query.filter_by(id=bucket_id).first()
+            databases.session.delete(delete)
+            databases.session.commit()
+            response = jsonify({'Status': 'Bucketlist deleted successfully.'})
+            response.status_code = 200
+            return response
+    elif request.method == 'PUT':
+        request.get_json(force=True)
+        data = BucketList.query.filter_by(id=bucket_id).first()
+        if not data:
+            response = jsonify({'warning': 'the bucketlist does not exist.'})
+            response.status_code = 404
+            return response
+        else:
+            try:
+                name = request.json['name']
+                data.name = name
+                databases.session.commit()
+                data = {}
+                for data in bucket_data:
+                    data = {
+                        'id': data.id,
+                        'name': data.name,
+                        'date-created': data.date_created,
+                        'date_modified': data.date_modified
+                    }
+                response = jsonify(data)
+                response.status_code = 201
+                return response
+            except KeyError:
+                response = jsonify({'error': 'Please use name for dict keys.'})
+                response.status_code = 500
+                return response
