@@ -18,6 +18,13 @@ def page_not_found():
     return response
 
 
+@app.errorhandler(405)
+def method_not_allowed(e):
+    response = jsonify({'error': 'Invalid request method. Please check your the request method being used'})
+    response.status_code = 405
+    return response
+
+
 @app.route('/bucketlist/api/v1/auth/register', methods=['POST'])
 def register():
     request.get_json(force=True)
