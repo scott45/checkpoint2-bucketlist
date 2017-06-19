@@ -102,7 +102,7 @@ def verify_token(request):
 
 
 @app.route('/bucketlist/api/v1/bucketlist', methods=['POST'])
-def login():
+def add_bucket():
     request.get_json(force=True)
     try:
         verification = verify_token(request)
@@ -125,41 +125,65 @@ def login():
         response = jsonify({'Error': 'Use the name for dict key.'})
         response.status_code = 500
         return response
-        
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@app.route('/bucketlist/api/v1/bucketlist', methods=['GET'])
+def retrieve_bucketlist():
+    message = 'No bucketlists have been created'
+    payload = verify_token(request)
+    if isinstance(payload, dict):
+        user_id = payload['user_id']
+    else:
+        return payload
+    respons = BucketList.query.all()
+    if not respons:
+        response = jsonify({'error': 'No bucketlists have been created'})
+        response.status_code = 200
+        return response
+    else:
+        limit = int(request.args.get("limit", 20))
+        if limit > 100:
+            limit = 100
+        search = request.args.get("q", "")
+        if search:
+            res = [bucket for bucket in respons if bucket.name in search and bucket.created_by in user_id]
+            if not res:
+                response = jsonify({'error': message})
+                response.status_code = 200
+                return response
+            else:
+                bucketlist_data = []
+                for data in res:
+                    final = {
+                        'id': data.id,
+                        'name': data.name,
+                        'date-created': data.date_created,
+                        'date_modified': data.date_modified,
+                        'created_by': data.created_by,
+                    }
+                    bucketlist_data.clear()
+                    bucketlist_data.append(final)
+                response = jsonify(bucketlist_data)
+                response.status_code = 200
+                return response
+        else:
+            res = [bucket for bucket in respons if bucket.created_by in user_id]
+            bucketlist_data = []
+            if not res:
+                response = jsonify({'error': message})
+                response.status_code = 200
+                return response
+            else:
+                for data in res:
+                    final = {
+                        'id': data.id,
+                        'name': data.name,
+                        'date-created': data.date_created,
+                        'date_modified': data.date_modified,
+                        'created_by': data.created_by,
+                    }
+                    bucketlist_data.append(final)
+                response = jsonify(bucketlist_data)
+                response.status_code = 200
+                return response
 
