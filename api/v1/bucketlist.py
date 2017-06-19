@@ -339,3 +339,28 @@ def edit_items(bucket_id, item_id):
             response = jsonify({'error': 'Please use name for dict keys.'})
             response.status_code = 500
             return response
+
+
+@app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>/items/<int:item_id>', methods=['DELETE'])
+def delete_item(bucket_id, item_id):
+    payload = verify_token(request)
+    if isinstance(payload, dict):
+        user_id = payload['user_id']
+    else:
+        return payload
+    res = BucketList.query.filter_by(id=bucket_id).first()
+    items_response = Items.query.filter_by(id=item_id).first()
+    if not res:
+        response = jsonify({'Warning': 'The bucketlist_id does not exist.'})
+        response.status_code = 404
+        return response
+    elif not items_response:
+        response = jsonify({'Warning': 'The item_id does not exist.'})
+        response.status_code = 404
+        return response
+    else:
+        databases.session.delete(items_response)
+        databases.session.commit()
+        response = jsonify({'Status': 'Item deleted successfully.'})
+        response.status_code = 200
+        return response
