@@ -11,6 +11,13 @@ from api.v1.models import Users, BucketList, Items
 databases.create_all()
 
 
+@app.errorhandler(404)
+def page_not_found():
+    response = jsonify({'error': 'The request can not be linked to, Please check your endpoint url'})
+    response.status_code = 404
+    return response
+
+
 @app.route('/bucketlist/api/v1/auth/register', methods=['POST'])
 def register():
     request.get_json(force=True)
