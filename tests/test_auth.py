@@ -1,7 +1,7 @@
 import unittest
 
 # from config file
-from api.__init__ import app, EnvironmentName, databases
+from api import app, EnvironmentName, databases
 
 import json
 
@@ -11,7 +11,7 @@ class AuthenticationTestCases(unittest.TestCase):
 
         # testing client using testing environment
         self.app = app.test_client()
-        EnvironmentName('TestingEnvironment')
+        EnvironmentName('DevelopmentEnvironment')
         databases.create_all()
 
     def tearDown(self):
@@ -21,22 +21,25 @@ class AuthenticationTestCases(unittest.TestCase):
     def test_register_successfully(self):
         payload = json.dumps({'username': 'scott', 'password': 'something'})
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 400)
         self.assertIn('Registration successful', response.data.decode('utf-8'))
 
     def test_register_without_password(self):
         payload = json.dumps({'username': 'scott', 'password': ''})
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
+        self.assertEqual(response.status_code, 404)
         self.assertIn("Password field is blank, register with one", response.data.decode('utf-8'))
 
     def test_register_with_special_characters(self):
         payload = json.dumps({'username': '33s?cot@@t', 'password': 'something'})
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
+        self.assertEqual(response.status_code, 404)
         self.assertIn("username cannot contain special characters", response.data.decode('utf-8'))
 
     def register_without_username(self):
         payload = json.dumps({'username': '', 'password': 'something'})
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
+        self.assertEqual(response.status_code, 404)
         self.assertIn("username cannot be empty", response.data.decode('utf-8'))
 
     def test_register_with_existing_username(self):
@@ -48,6 +51,7 @@ class AuthenticationTestCases(unittest.TestCase):
     def test_register_with_short_password(self):
         payload = json.dumps({'username': '', 'password': 'me'})
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
+        self.assertEqual(response.status_code, 201)
         self.assertIn("Password is too short, use a longer one", response.data.decode('utf-8'))
 
     def test_registration_route(self):
