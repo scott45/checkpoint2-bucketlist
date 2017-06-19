@@ -188,8 +188,7 @@ def retrieve_bucketlist():
                 return response
 
 
-@app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>',
-           methods=['GET', 'PUT', 'DELETE'])
+@app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>', methods=['GET', 'PUT', 'DELETE'])
 def bucketlist_by_id(bucket_id):
     payload = verify_token(request)
     if isinstance(payload, dict):
@@ -274,8 +273,7 @@ def bucketlist_by_id(bucket_id):
                 return response
 
 
-@app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>/items',
-           methods=['POST'])
+@app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>/items', methods=['POST'])
 def add_items(bucket_id):
     payload = verify_token(request)
     if isinstance(payload, dict):
@@ -303,6 +301,40 @@ def add_items(bucket_id):
                 response = jsonify({'Status': 'Success'})
                 response.status_code = 200
                 return response
+        except KeyError:
+            response = jsonify({'error': 'Please use name for dict keys.'})
+            response.status_code = 500
+            return response
+
+
+@app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>/items/<int:item_id>', methods=['PUT'])
+def edit_items(bucket_id, item_id):
+    request.get_json(force=True)
+    payload = verify_token(request)
+    if isinstance(payload, dict):
+        user_id = payload['user_id']
+    else:
+        return payload
+    resp = BucketList.query.all()
+    res = [data for data in resp if data.created_by in user_id and
+           data.id == bucket_id]
+    items_response = Items.query.filter_by(id=item_id).first()
+    if not res:
+        response = jsonify({'Warning': 'The bucketlist_id does not exist.'})
+        response.status_code = 404
+        return response
+    elif not items_response:
+        response = jsonify({'Warning': 'The item_id does not exist.'})
+        response.status_code = 404
+        return response
+    else:
+        try:
+            new_name = request.json['name']
+            items_response.name = new_name
+            databases.session.commit()
+            response = jsonify({'Status': 'Bucketlist Item successfully edited.'})
+            response.status_code = 200
+            return response
         except KeyError:
             response = jsonify({'error': 'Please use name for dict keys.'})
             response.status_code = 500
