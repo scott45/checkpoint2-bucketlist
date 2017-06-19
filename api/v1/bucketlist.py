@@ -272,3 +272,38 @@ def bucketlist_by_id(bucket_id):
                 response = jsonify({'error': 'Please use name for dict keys.'})
                 response.status_code = 500
                 return response
+
+
+@app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>/items',
+           methods=['POST'])
+def add_items(bucket_id):
+    payload = verify_token(request)
+    if isinstance(payload, dict):
+        user_id = payload['user_id']
+    else:
+        return payload
+    respons = BucketList.query.all()
+    resp = [data for data in respons if data.created_by in user_id and data.id == bucket_id]
+    if not resp:
+        response = jsonify({'Warning': 'The provided bucketlist_id does not exist.'})
+        response.status_code = 404
+        return response
+    else:
+        try:
+            item_data = Items.query.all()
+            request.get_json(force=True)
+            item_name = request.json['name']
+            item_check = [item.name for item in item_data if item.name == item_name]
+            if item_check:
+                response = jsonify({'Warning': 'this item already exists.'})
+                return response
+            else:
+                item_add = Items(name=item_name, id=bucket_id)
+                item_add.save()
+                response = jsonify({'Status': 'Success'})
+                response.status_code = 200
+                return response
+        except KeyError:
+            response = jsonify({'error': 'Please use name for dict keys.'})
+            response.status_code = 500
+            return response
