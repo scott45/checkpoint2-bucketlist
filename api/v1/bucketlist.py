@@ -203,7 +203,7 @@ def retrieve_bucketlist():
 
 
 @app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>', methods=['GET', 'PUT', 'DELETE'])
-def bucketlist_by_id(bucket_id):
+def bucket_by_id(bucket_id):
     payload = verify_token(request)
     if isinstance(payload, dict):
         user_id = payload['user_id']
@@ -215,11 +215,11 @@ def bucketlist_by_id(bucket_id):
         data = {}
         for data in bucket_data:
             final_data = []
-            for item_data in data.items:
+            for item_data in bucket_data:
                 item_data = {
                     'id': item_data.id,
                     'name': item_data.name,
-                    'date-created': item_data.datecreated,
+                    'date-created': item_data.date_created,
                     'date_modified': item_data.date_modified,
                 }
                 final_data.append(item_data)
@@ -310,7 +310,7 @@ def add_items(bucket_id):
                 response = jsonify({'Warning': 'this item already exists.'})
                 return response
             else:
-                item_add = Items(name=item_name, id=bucket_id)
+                item_add = Items(name=item_name, bucketlist_id=bucket_id)
                 item_add.save()
                 response = jsonify({'Status': 'Success'})
                 response.status_code = 200
