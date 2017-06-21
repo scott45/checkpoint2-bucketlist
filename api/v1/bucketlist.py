@@ -51,7 +51,7 @@ def register():
                 user_data.hash_password(pass_word)
                 user_data.save()
                 response = jsonify(
-                    {'Registration status': user_data.username + 'successfully registered!!'})
+                    {'Registration status': user_data.username + ' successfully registered!!'})
                 response.status_code = 201
                 return response
     except KeyError:
@@ -312,7 +312,7 @@ def add_items(bucket_id):
             else:
                 item_add = Items(name=item_name, bucketlist_id=bucket_id)
                 item_add.save()
-                response = jsonify({'Status': 'Success'})
+                response = jsonify({'Status': 'Success, item has been created'})
                 response.status_code = 200
                 return response
         except KeyError:
