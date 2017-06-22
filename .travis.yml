@@ -1,0 +1,15 @@
+language: python
+# vesions
+python:
+  - "3.4"
+cache: pip
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
+  - pip install coverage
+# command to run tests
+script:
+  - nosetests --with-coverage
+after_success:
+  - coveralls
