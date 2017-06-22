@@ -17,5 +17,11 @@ before_script:
 # command to run tests
 script:
   - nosetests
+
+after_script:
+  - psql -U postgres
+  - dropdb bucketlist_db
+  - dropdb testing_db
+
 after_success:
   - coveralls
