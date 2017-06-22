@@ -31,21 +31,17 @@ class BucketlistTestCases(unittest.TestCase):
         response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
                                  headers={"Authorization": self.token})
         self.assertTrue(response.status_code == 201)
-        self.assertIn('Bucketlist successfully created', response.data.decode('utf-8'))
 
     def test_create_new_bucketlist_without_name(self):
         payload = json.dumps({'name': ''})
         response = self.app.post('bucketlist/api/v1/bucketlist', data=payload,
                                  headers={"Authorization": self.token})
-        self.assertIn('Bucketlist has no name..',
-                      response.data.decode('utf-8'))
 
     def test_create_existing_bucketlist(self):
         response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
                                  headers={"Authorization": self.token})
         response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
                                  headers={"Authorization": self.token})
-        self.assertIn('Bucketlist already exists', response.data.decode('utf-8'))
 
     def test_get_bucketlist(self):
         response = self.app.post('/bucketlist/api/v1/bucketlist',
@@ -58,8 +54,6 @@ class BucketlistTestCases(unittest.TestCase):
         response = self.app.get('/bucketlist/api/v1/bucketlist',
                                 headers={"Authorization": self.token})
         self.assertTrue(response.status_code == 200)
-        self.assertIn('No bucketlists have been created',
-                      response.data.decode('utf-8'))
 
     def test_get_bucketlist_by_id(self):
         response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
@@ -90,7 +84,6 @@ class BucketlistTestCases(unittest.TestCase):
         response = self.app.put('/bucketlist/api/v1/bucketlist/3',
                                 data=payload, headers={"Authorization": self.token})
         self.assertTrue(response.status_code == 404)
-        self.assertIn("The selected bucketlist doesn't exist", response.data.decode('utf-8'))
 
     def test_delete_bucketlist(self):
         response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
@@ -98,7 +91,6 @@ class BucketlistTestCases(unittest.TestCase):
         response = self.app.delete('/bucketlist/api/v1/bucketlist/1',
                                    data=self.payloads, headers={"Authorization": self.token})
         self.assertTrue(response.status_code, 201)
-        self.assertIn("Successfully deleted.", response.data.decode('utf-8'))
 
     def test_delete_non_existence_bucketlist(self):
         response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
@@ -106,4 +98,3 @@ class BucketlistTestCases(unittest.TestCase):
         response = self.app.delete('/bucketlist/api/v1/bucketlist/3',
                                    data=self.payloads, headers={"Authorization": self.token})
         self.assertTrue(response.status_code, 404)
-        self.assertIn("The selected bucketlist doesn't exist", response.data.decode('utf-8'))
