@@ -41,5 +41,5 @@ omit =
     *mimetypes.py*
     *stringprep.py*
     *uuid.py*
-    *api/v1/__init__.py*
     *instance/__init__.py*
+    *api/v1/__init__.py*
