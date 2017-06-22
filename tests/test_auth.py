@@ -9,7 +9,7 @@ class AuthenticationTestCases(unittest.TestCase):
 
         # testing client using testing environment
         self.app = app.test_client()
-        EnvironmentName('TestingEnvironment')
+        EnvironmentName('DevelopmentEnvironment')
         databases.create_all()
 
     def tearDown(self):

@@ -10,7 +10,7 @@ class BucketlistTestCases(unittest.TestCase):
     # testing client using testing environment
     def setUp(self):
         self.app = app.test_client()
-        EnvironmentName('TestingEnvironment')
+        EnvironmentName('DevelopmentEnvironment')
         databases.create_all()
 
         # instance of a user directed to register route

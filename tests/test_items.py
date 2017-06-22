@@ -11,7 +11,7 @@ class BucketlistItemsTestCases(unittest.TestCase):
         # testing client using testing environment
 
         self.app = app.test_client()
-        EnvironmentName('TestingEnvironment')
+        EnvironmentName('DevelopmentEnvironment')
         databases.create_all()
 
         # instance of a user directed to register route
