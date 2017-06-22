@@ -4,8 +4,6 @@ import re
 from flask import jsonify, request, abort
 import jwt
 
-# Liste des seaux
-
 from api.__init__ import app, databases
 from api.v1.models import Users, BucketList, Items
 
@@ -92,7 +90,6 @@ def login():
             payload = {"user_id": user_id, "exp": datetime.utcnow() + timedelta(minutes=60)}
             token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
             response = jsonify({'Login status': 'Successfully Logged in ', 'Token': token.decode('utf-8')})
-            response.status_code = 200
             return response
         else:
             response = jsonify({'Login status': 'Invalid credentials'})
