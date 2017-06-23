@@ -1,9 +1,11 @@
+# import modules
 from datetime import datetime
 from passlib.apps import custom_app_context as pwd_context
 
 from api.__init__ import databases
 
 
+# user class model with methods
 class Users(databases.Model):
     __tablename__ = 'User'
     id = databases.Column(databases.Integer, primary_key=True, autoincrement=True)
@@ -22,6 +24,7 @@ class Users(databases.Model):
         return pwd_context.verify(password, self.new_password)
 
 
+# bucketlist class model with methods
 class BucketList(databases.Model):
     __tablename__ = 'Bucketlist'
     id = databases.Column(databases.Integer, primary_key=True, autoincrement=True)
@@ -40,6 +43,7 @@ class BucketList(databases.Model):
         databases.session.commit()
 
 
+# bucketlist items class model with methods
 class Items(databases.Model):
     __tablename__ = 'BucketlistItems'
     id = databases.Column(databases.Integer, primary_key=True, autoincrement=True)
@@ -48,9 +52,9 @@ class Items(databases.Model):
     date_modified = databases.Column(databases.DateTime, default=datetime.utcnow(), onupdate=datetime.utcnow())
     bucketlist_id = databases.Column(databases.Integer, databases.ForeignKey('Bucketlist.id'))
 
-    def __init__(self, name, bucketlist_id):
+    def __init__(self, name, id):
         self.name = name
-        self.bucketlist_id = bucketlist_id
+        self.bucketlist_id = id
 
     def save(self):
         databases.session.add(self)
