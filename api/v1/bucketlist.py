@@ -1,3 +1,4 @@
+# import modules, models and configs
 from datetime import datetime, timedelta
 import re
 
@@ -10,6 +11,7 @@ from api.v1.models import Users, BucketList, Items
 databases.create_all()
 
 
+# 404 error handler
 @app.errorhandler(404)
 def page_not_found():
     response = jsonify({'error': 'The request can not be linked to, Please check your endpoint url'})
@@ -17,6 +19,7 @@ def page_not_found():
     return response
 
 
+# 405 error handler
 @app.errorhandler(405)
 def method_not_allowed(e):
     response = jsonify({'error': 'Invalid request method. Please check your the request method being used'})
@@ -24,38 +27,42 @@ def method_not_allowed(e):
     return response
 
 
+# user registration method
 @app.route('/bucketlist/api/v1/auth/register', methods=['POST'])
 def register():
     request.get_json(force=True)
     try:
         name = request.json['username']
         pass_word = request.json['password']
-        if not name:
-            response = jsonify({'Error': 'Username not given.'})
+
+        if not name and not pass_word:
+            response = jsonify({'error': 'Username and password field cannot be blank'})
             response.status_code = 400
             return response
-        elif not re.match("^[a-zA-Z0-9_]*$", name):
-            response = jsonify({'Error': 'Username contains special characters'})
-            response.status_code = 401
-            return response
-        elif len(pass_word) < 6:
+
+        if len(pass_word) < 6:
             response = jsonify({'Error': 'Password is too short, it must be more than 6 characters'})
             response.status_code = 401
             return response
+
+        if not re.match("^[a-zA-Z0-9_]*$", name):
+            response = jsonify({'error': 'Username cannot contain special characters'})
+            response.status_code = 401
+            return response
+
+        res = Users.query.all()
+        name_check = [r.username for r in res]
+        if name in name_check:
+            response = jsonify({'Error': 'The Username already taken, register another name.'})
+            response.status_code = 401
+            return response
         else:
-            res = Users.query.all()
-            name_check = [r.username for r in res]
-            if name in name_check:
-                response = jsonify({'Error': 'The Username already taken, register another name.'})
-                response.status_code = 401
-                return response
-            else:
-                user_data = Users(username=name)
-                user_data.hash_password(pass_word)
-                user_data.save()
-                response = jsonify(
-                    {'Registration status': user_data.username + ' successfully registered!!'})
-                response.status_code = 201
+            user_data = Users(username=name)
+            user_data.hash_password(pass_word)
+            user_data.save()
+            response = jsonify(
+                {'Registration status': user_data.username + ' successfully registered!!'})
+            response.status_code = 201
             return response
     except KeyError:
         response = jsonify({
@@ -65,28 +72,29 @@ def register():
         return response
 
 
+# user login method
 @app.route('/bucketlist/api/v1/auth/login', methods=['POST'])
 def login():
     request.get_json(force=True)
     try:
         name = request.json['username']
         pass_word = request.json['password']
+
         res = Users.query.filter_by(username=name)
         user_name_check = [user.username for user in res if user.verify_password(pass_word) is True]
         user_id = [user.id for user in res if name in user_name_check]
-        if not name:
-            response = jsonify({'error': 'Username field cannot be blank'})
+
+        if not name and not pass_word:
+            response = jsonify({'error': 'Username and password field cannot be blank'})
             response.status_code = 400
             return response
-        elif not pass_word:
-            response = jsonify({'error': 'Password field cannot be blank'})
-            response.status_code = 400
-            return response
-        elif not re.match("^[a-zA-Z0-9_]*$", name):
+
+        if not re.match("^[a-zA-Z0-9_]*$", name):
             response = jsonify({'error': 'Username cannot contain special characters'})
             response.status_code = 400
             return response
-        elif name in user_name_check:
+
+        if name in user_name_check:
             payload = {"user_id": user_id, "exp": datetime.utcnow() + timedelta(minutes=60)}
             token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
             response = jsonify({'Login status': 'Successfully Logged in ', 'Token': token.decode('utf-8')})
@@ -101,6 +109,7 @@ def login():
         return response
 
 
+# verify token method
 def verify_token(request):
     token = request.headers.get("Authorization")
     if not token:
@@ -117,6 +126,7 @@ def verify_token(request):
     return payload
 
 
+# add bucket method
 @app.route('/bucketlist/api/v1/bucketlist', methods=['POST'])
 def add_bucket():
     request.get_json(force=True)
@@ -143,6 +153,7 @@ def add_bucket():
         return response
 
 
+# get bucket method
 @app.route('/bucketlist/api/v1/bucketlist', methods=['GET'])
 def retrieve_bucketlist():
     message = 'No bucketlists have been created'
@@ -204,6 +215,7 @@ def retrieve_bucketlist():
                 return response
 
 
+# get, update and delete bucket method
 @app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>', methods=['GET', 'PUT', 'DELETE'])
 def bucket_by_id(bucket_id):
     payload = verify_token(request)
@@ -289,6 +301,7 @@ def bucket_by_id(bucket_id):
                 return response
 
 
+# add bucket item method
 @app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>/items', methods=['POST'])
 def add_items(bucket_id):
     payload = verify_token(request)
@@ -312,7 +325,7 @@ def add_items(bucket_id):
                 response = jsonify({'Warning': 'this item already exists.'})
                 return response
             else:
-                item_add = Items(name=item_name, bucketlist_id=bucket_id)
+                item_add = Items(name=item_name, id=bucket_id)
                 item_add.save()
                 response = jsonify({'Status': 'Success, item has been created'})
                 response.status_code = 200
@@ -323,6 +336,7 @@ def add_items(bucket_id):
             return response
 
 
+# update bucket item method
 @app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>/items/<int:item_id>', methods=['PUT'])
 def edit_items(bucket_id, item_id):
     request.get_json(force=True)
@@ -357,6 +371,7 @@ def edit_items(bucket_id, item_id):
             return response
 
 
+# delete bucket item method
 @app.route('/bucketlist/api/v1/bucketlist/<int:bucket_id>/items/<int:item_id>', methods=['DELETE'])
 def delete_item(bucket_id, item_id):
     payload = verify_token(request)
