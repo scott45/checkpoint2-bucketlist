@@ -44,7 +44,7 @@ class AuthenticationTestCases(unittest.TestCase):
     # tests register with existing username
     def test_register_with_existing_username(self):
         payload = json.dumps({'username': 'scott', 'password': 'something'})
-        payload = json.dumps({'username': 'scott', 'password': 'something'})
+        response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         self.assertIn('The Username already taken, register another name', response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 401)
@@ -60,13 +60,6 @@ class AuthenticationTestCases(unittest.TestCase):
         payload = json.dumps({'username': 'scott', 'password': 'something'})
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         self.assertEqual(response.status_code, 201)
-
-    # tests successful login
-    def test_login_successful(self):
-        payload = json.dumps({'username': 'scott', 'password': 'scott'})
-        self.app.post('/bucketlist/api/v1/auth/register', data=payload)
-        response = self.app.post('/bucketlist/api/v1/auth/login', data=payload)
-        self.assertIn('Successfully Logged in', response.data.decode('utf-8'))
 
     # tests register with invalid username
     def test_login__with_invalid_username(self):
