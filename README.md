@@ -73,7 +73,7 @@ Create the database and run migrations
 
 `$ createdb bucketlist_db`
 
-`$ createdb testing_dbt`
+`$ createdb testing_db`
 
 `$ python manage.py db init`
 
@@ -101,7 +101,7 @@ DELETE bucketlist/app/v1/bucketlists/id/items/item_id | Deletes an item in a buc
 
 ### Searching
 
-It is possible to search bucketlists using the parameter `q` in the GET request. 
+Functionality to search bucketlists using the parameter `q` in the GET request is enabled. 
 Example:
 
 `GET http://localhost:/bucketlists?q=<whatever>`
@@ -116,5 +116,32 @@ Below is a sample of a GET request for bucketlist
 The application tests are based on python’s unit testing framework unittest.
 To run tests with nose, run `nosetests`
 
-### License
-The API has an MIT license
+## Credits
+
+1. [Businge Scott](https://github.com/scott45)
+
+2. The amazing [Andela](https://www.andela.com) community.
+
+## License
+
+### The MIT License (MIT)
+
+Copyright (c) 2017 [BUSINGE SCOTT [ANDELA]]
+
+> Permission is hereby granted, free of charge, to any person obtaining a copy
+> of this software and associated documentation files (the "Software"), to deal
+> in the Software without restriction, including without limitation the rights
+> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+> copies of the Software, and to permit persons to whom the Software is
+> furnished to do so, subject to the following conditions:
+>
+> The above copyright notice and this permission notice shall be included in
+> all copies or substantial portions of the Software.
+>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+> THE SOFTWARE.
