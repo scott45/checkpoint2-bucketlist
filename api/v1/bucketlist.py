@@ -2,8 +2,8 @@
 from datetime import datetime, timedelta
 import re
 
-from flask import jsonify, request, abort
 import jwt
+from flask import jsonify, request, abort
 
 from api.__init__ import app, databases
 from api.v1.models import Users, BucketList, Items
@@ -80,24 +80,24 @@ def login():
         name = request.json['username']
         pass_word = request.json['password']
 
-        res = Users.query.filter_by(username=name)
-        user_name_check = [user.username for user in res if user.verify_password(pass_word) is True]
-        user_id = [user.id for user in res if name in user_name_check]
-
         if not name and not pass_word:
             response = jsonify({'error': 'Username and password field cannot be blank'})
             response.status_code = 400
             return response
 
-        if not re.match("^[a-zA-Z0-9_]*$", name):
+        elif not re.match("^[a-zA-Z0-9_]*$", name):
             response = jsonify({'error': 'Username cannot contain special characters'})
             response.status_code = 400
             return response
 
+        res = Users.query.all()
+        user_name_check = [user.username for user in res if user.verify_password(pass_word) is True]
+        user_id = [user.id for user in res if name in user_name_check]
+
         if name in user_name_check:
             payload = {"user_id": user_id, "exp": datetime.utcnow() + timedelta(minutes=60)}
             token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
-            response = jsonify({'Login status': 'Successfully Logged in ', 'Token': token.decode('utf-8')})
+            response = jsonify({'Login status': 'Login successful', 'Token': token.decode('utf-8')})
             return response
         else:
             response = jsonify({'Login status': 'Invalid credentials'})
