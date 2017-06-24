@@ -1,6 +1,6 @@
-from flask import Flask
 from api.v1.bucketlist import *
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
 
 from instance.config import application_configuration
 
