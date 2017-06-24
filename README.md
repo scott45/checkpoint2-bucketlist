@@ -73,7 +73,7 @@ Create the database and run migrations
 
 `$ createdb bucketlist_db`
 
-`$ createdb testing_dbt`
+`$ createdb testing_db`
 
 `$ python manage.py db init`
 
@@ -101,7 +101,7 @@ DELETE bucketlist/app/v1/bucketlists/id/items/item_id | Deletes an item in a buc
 
 ### Searching
 
-It is possible to search bucketlists using the parameter `q` in the GET request. 
+Functionality to search bucketlists using the parameter `q` in the GET request is enabled. 
 Example:
 
 `GET http://localhost:/bucketlists?q=<whatever>`
