@@ -1,4 +1,5 @@
 [![Businge Scott](https://img.shields.io/badge/Businge%20Scott-Checkpoint2-green.svg)]()
+[![Coverage Status](https://coveralls.io/repos/github/scott45/checkpoint2-bucketlist/badge.svg?branch=develop)](https://coveralls.io/github/scott45/checkpoint2-bucketlist?branch=develop)
 [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
