@@ -1,5 +1,7 @@
 # import modules
 from datetime import datetime
+
+# module that hashes the password (uses the sha256 encryption)
 from passlib.apps import custom_app_context as pwd_context
 
 from api.__init__ import databases
@@ -30,6 +32,7 @@ class BucketList(databases.Model):
     id = databases.Column(databases.Integer, primary_key=True, autoincrement=True)
     user = databases.Column(databases.Integer, databases.ForeignKey('User.id'))
     name = databases.Column(databases.String(150))
+    items = databases.relationship('Items', backref="Bucketlist")
     date_created = databases.Column(databases.DateTime, default=datetime.utcnow())
     date_modified = databases.Column(databases.DateTime, default=datetime.utcnow(), onupdate=datetime.utcnow())
     created_by = databases.Column(databases.Integer())

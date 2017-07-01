@@ -1,13 +1,22 @@
 import unittest
 from api.__init__ import app, EnvironmentName, databases
 
+# parses json to string or files (or python dict and []
 import json
+
+'''
+ 201  ok resulting to  creation of something
+ 200  ok
+ 400  bad request
+ 404  not found
+ 401  unauthorized
+ 409  conflict
+'''
 
 
 # tests all functionality of bucket items and there defined methods
 class AuthenticationTestCases(unittest.TestCase):
     def setUp(self):
-
         # testing client using testing environment
         self.app = app.test_client()
         EnvironmentName('TestingEnvironment')
@@ -47,19 +56,13 @@ class AuthenticationTestCases(unittest.TestCase):
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         self.assertIn('The Username already taken, register another name', response.data.decode('utf-8'))
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 409)
 
     # tests register with short password
     def test_register_with_short_password(self):
         payload = json.dumps({'username': '', 'password': 'me'})
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         self.assertEqual(response.status_code, 401)
-
-    # tests registration route
-    def test_registration_route(self):
-        payload = json.dumps({'username': 'scott', 'password': 'something'})
-        response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
-        self.assertEqual(response.status_code, 201)
 
     # tests register with invalid username
     def test_login__with_invalid_username(self):

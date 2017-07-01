@@ -5,10 +5,21 @@ import re
 import jwt
 from flask import jsonify, request, abort
 
+# abort method either accepts an error code or it can accept a Response object
+
 from api.__init__ import app, databases
 from api.v1.models import Users, BucketList, Items
 
 databases.create_all()
+
+'''
+ 201  ok resulting to  creation of something
+ 200  ok
+ 400  bad request
+ 404  not found
+ 401  unauthorized
+ 409  conflict
+'''
 
 
 # 404 error handler
@@ -22,7 +33,7 @@ def page_not_found():
 # 405 error handler
 @app.errorhandler(405)
 def method_not_allowed(e):
-    response = jsonify({'error': 'Invalid request method. Please check your the request method being used'})
+    response = jsonify({'error': 'Invalid request method. Please check the request method being used'})
     response.status_code = 405
     return response
 
@@ -54,7 +65,7 @@ def register():
         name_check = [r.username for r in res]
         if name in name_check:
             response = jsonify({'Error': 'The Username already taken, register another name.'})
-            response.status_code = 401
+            response.status_code = 409
             return response
         else:
             user_data = Users(username=name)
@@ -136,10 +147,18 @@ def add_bucket():
             user_id = verification['user_id']
         else:
             return verification
+
         b_name = request.json['name']
         if not b_name:
             response = jsonify({'Error': 'bucketlist has no name'})
-            response.status_code = 403
+            response.status_code = 400
+            return response
+
+        res = BucketList.query.all()
+        data_check = [data for data in res if data.name == b_name]
+        if data_check:
+            response = jsonify({'Warning': 'this Bucket already exists.'})
+            response.status_code = 409
             return response
         else:
             b = BucketList(name=b_name, created_by=user_id[0])
@@ -164,19 +183,21 @@ def retrieve_bucketlist():
         return payload
     respons = BucketList.query.all()
     if not respons:
-        response = jsonify({'error': 'No bucketlists have been created'})
+        response = jsonify({'error': 'No bucketlist has been created'})
         response.status_code = 200
         return response
     else:
         limit = int(request.args.get("limit", 20))
         if limit > 100:
             limit = 100
+            response = jsonify({'error': 'Bucketlist maximum limit is 100'})
+            response.status_code = 400
+
         search = request.args.get("q", "")
         if search:
             res = [bucket for bucket in respons if bucket.name in search and bucket.created_by in user_id]
             if not res:
-                response = jsonify({'error': message})
-                response.status_code = 200
+                response = jsonify({'error': 'The bucketlist you searched does not exist'})
                 return response
             else:
                 bucketlist_data = []
@@ -229,7 +250,7 @@ def bucket_by_id(bucket_id):
         data = {}
         for data in bucket_data:
             final_data = []
-            for item_data in bucket_data:
+            for item_data in data.items:
                 item_data = {
                     'id': item_data.id,
                     'name': item_data.name,
@@ -319,16 +340,23 @@ def add_items(bucket_id):
         try:
             item_data = Items.query.all()
             request.get_json(force=True)
+
             item_name = request.json['name']
+            if not item_name:
+                response = jsonify({'Error': 'bucketlist has no name'})
+                response.status_code = 400
+                return response
+
             item_check = [item.name for item in item_data if item.name == item_name]
             if item_check:
                 response = jsonify({'Warning': 'this item already exists.'})
+                response.status_code = 409
                 return response
             else:
                 item_add = Items(name=item_name, id=bucket_id)
                 item_add.save()
                 response = jsonify({'Status': 'Success, item has been created'})
-                response.status_code = 200
+                response.status_code = 201
                 return response
         except KeyError:
             response = jsonify({'error': 'Please use name for dict keys.'})
@@ -379,6 +407,7 @@ def delete_item(bucket_id, item_id):
         user_id = payload['user_id']
     else:
         return payload
+
     res = BucketList.query.filter_by(id=bucket_id).first()
     items_response = Items.query.filter_by(id=item_id).first()
     if not res:

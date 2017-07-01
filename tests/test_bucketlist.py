@@ -1,9 +1,19 @@
 import unittest
 
+# parses json to string or files (or python dict and []
 import json
 
 # from config file
 from api.__init__ import app, EnvironmentName, databases
+
+'''
+ 201  ok resulting to  creation of something
+ 200  ok
+ 400  bad request
+ 404  not found
+ 401  unauthorized
+ 409  conflict
+'''
 
 
 # tests all functionality of bucketlist.py and there defined methods
@@ -38,14 +48,16 @@ class BucketlistTestCases(unittest.TestCase):
     def test_create_new_bucketlist_without_name(self):
         payload = json.dumps({'name': ''})
         response = self.app.post('bucketlist/api/v1/bucketlist', data=payload,
-                                 headers={"Authorization": self.token})
+                                 headers={"Authorization": self.token})  #
+        self.assertEqual(response.status_code, 400)
 
     # tests creation of bucket fails with existing name
     def test_create_existing_bucketlist(self):
         response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
                                  headers={"Authorization": self.token})
         response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
-                                 headers={"Authorization": self.token})
+                                 headers={"Authorization": self.token})  #
+        self.assertEqual(response.status_code, 409)
 
     # tests that a bucket successfully created is retrieved
     def test_get_bucketlist(self):
@@ -56,10 +68,11 @@ class BucketlistTestCases(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     # tests that a bucket not successfully created is not found
-    def test_get_non_existence_bucketlist(self):
+    def test_get_bucketlist_while_database_empty(self):
         response = self.app.get('/bucketlist/api/v1/bucketlist',
                                 headers={"Authorization": self.token})
         self.assertTrue(response.status_code == 200)
+        self.assertIn('No bucketlist has been created', response.data.decode('utf-8'))  #
 
     # tests getting a bucket by id
     def test_get_bucketlist_by_id(self):
@@ -101,7 +114,7 @@ class BucketlistTestCases(unittest.TestCase):
                                  headers={"Authorization": self.token})
         response = self.app.delete('/bucketlist/api/v1/bucketlist/1',
                                    data=self.payloads, headers={"Authorization": self.token})
-        self.assertTrue(response.status_code, 201)
+        self.assertTrue(response.status_code, 200)  #
 
     # tests deleting a non existent bucket fails
     def test_delete_non_existence_bucketlist(self):
@@ -110,3 +123,26 @@ class BucketlistTestCases(unittest.TestCase):
         response = self.app.delete('/bucketlist/api/v1/bucketlist/3',
                                    data=self.payloads, headers={"Authorization": self.token})
         self.assertTrue(response.status_code, 404)
+
+    # tests that a pagination default is 20
+    def test_get_pagination_default(self):
+        response = self.app.get('/bucketlist/api/v1/bucketlist?limit=20',
+                                headers={"Authorization": self.token})
+        self.assertEqual(response.status_code, 200)  #
+
+    # tests search bucket by name
+    def test_search_bucketlist(self):
+        response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
+                                 headers={"Authorization": self.token})
+        response = self.app.get('/bucketlist/api/v1/bucketlist?q=Faith',
+                                headers={"Authorization": self.token})
+        self.assertEqual(response.status_code, 200)  #
+
+    # tests search bucket by name
+    def test_search_non_existent_bucketlist(self):
+        response = self.app.post('bucketlist/api/v1/bucketlist', data=self.payloads,
+                                 headers={"Authorization": self.token})
+        response = self.app.get('/bucketlist/api/v1/bucketlist?q=Wikedzi&limit=100',
+                                headers={"Authorization": self.token})
+        self.assertIn('The bucketlist you searched does not exist',
+                      response.data.decode('utf-8'))  #
