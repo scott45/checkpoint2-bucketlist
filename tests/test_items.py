@@ -125,4 +125,4 @@ class BucketlistItemsTestCases(unittest.TestCase):
                                  data=self.itempayloads, headers={"Authorization": self.token})
         response = self.app.get('bucketlist/api/v1/bucketlist/1/items',
                                 data=self.itempayloads, headers={"Authorization": 'bad_token_here'})
-        self.assertEqual(response.status_code, 405)  #
+        self.assertEqual(response.status_code, 405)
