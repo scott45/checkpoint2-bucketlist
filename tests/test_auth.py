@@ -56,7 +56,7 @@ class AuthenticationTestCases(unittest.TestCase):
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
         self.assertIn('The Username already taken, register another name', response.data.decode('utf-8'))
-        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.status_code, 409)  #
 
     # tests register with short password
     def test_register_with_short_password(self):
