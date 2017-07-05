@@ -4,7 +4,7 @@ import re
 
 import jwt
 from flask import jsonify, request, abort
-
+# jsonify converts objects to JSON strings
 # abort method either accepts an error code or it can accept a Response object
 
 from api.__init__ import app, databases
@@ -19,6 +19,14 @@ databases.create_all()
  404  not found
  401  unauthorized
  409  conflict
+'''
+
+'''
+    (UTF) Unicode Transformation Format
+    its a character encoding
+    A character in UTF8 can be from 1 to 4 bytes long
+    UTF-8 is backwards compatible with ASCII
+    is the preferred encoding for e-mail and web pages
 '''
 
 
@@ -41,6 +49,7 @@ def method_not_allowed(e):
 # user registration method
 @app.route('/bucketlist/api/v1/auth/register', methods=['POST'])
 def register():
+    # if force set to True the mimetype (app/json) is ignored
     request.get_json(force=True)
     try:
         name = request.json['username']
@@ -56,6 +65,7 @@ def register():
             response.status_code = 401
             return response
 
+        # regex pattern below matches alphanumeric characters
         if not re.match("^[a-zA-Z0-9_]*$", name):
             response = jsonify({'error': 'Username cannot contain special characters'})
             response.status_code = 401
@@ -96,6 +106,7 @@ def login():
             response.status_code = 400
             return response
 
+        # regex pattern below matches alphanumeric characters
         elif not re.match("^[a-zA-Z0-9_]*$", name):
             response = jsonify({'error': 'Username cannot contain special characters'})
             response.status_code = 400
@@ -181,17 +192,21 @@ def retrieve_bucketlist():
         user_id = payload['user_id']
     else:
         return payload
-    respons = BucketList.query.all()
+
+    limit = int(request.args.get("limit", 20))
+    if limit > 100:
+        limit = 100
+    respons = BucketList.query.limit(limit).all()
     if not respons:
         response = jsonify({'error': 'No bucketlist has been created'})
         response.status_code = 200
         return response
     else:
-        limit = int(request.args.get("limit", 20))
-        if limit > 100:
-            limit = 100
-            response = jsonify({'error': 'Bucketlist maximum limit is 100'})
-            response.status_code = 400
+        # limit = int(request.args.get("limit", 20))
+        # if limit > 100:
+        #     limit = 100
+        #     response = jsonify({'error': 'Bucketlist maximum limit is 100'})
+        #     response.status_code = 400
 
         search = request.args.get("q", "")
         if search:
