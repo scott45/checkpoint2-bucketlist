@@ -10,6 +10,7 @@ migrate = Migrate(app, databases)
 manager = Manager(app)
 manager.add_command('databases', MigrateCommand)
 
+
 @manager.command
 def init_db():
     os.system('createdb bucketlist_db')
