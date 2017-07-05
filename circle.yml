@@ -1,0 +1,17 @@
+machine:
+  python:
+    version: 3.4
+
+dependencies:
+  post:
+    - pip install -r requirements.txt
+
+test:
+  override:
+    - createdb bucketlist_db;
+    - createdb testing_db;
+    - rm -rf migrations
+    - python manage.py databases init
+    - python manage.py databases migrate
+    - python manage.py databases upgrade
+    - nosetests 

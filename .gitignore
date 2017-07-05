@@ -1,3 +1,5 @@
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -11,7 +13,6 @@ migrations/
 # Distribution / packaging
 .Python
 env/
-.idea/
 build/
 develop-eggs/
 dist/

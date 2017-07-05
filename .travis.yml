@@ -1,0 +1,27 @@
+language: python
+# vesions
+python:
+  - "3.4"
+
+cache: pip
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
+  - pip install coverage
+
+before_script:
+  - sudo -u postgres createdb bucketlist_db
+  - sudo -u postgres createdb testing_db
+
+# command to run tests
+script:
+  - nosetests --with-coverage
+
+after_script:
+  - psql -U postgres
+  - dropdb bucketlist_db
+  - dropdb testing_db
+
+after_success:
+  - coveralls
