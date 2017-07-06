@@ -46,6 +46,14 @@ def method_not_allowed(e):
     return response
 
 
+# 500 error handler
+@app.errorhandler(500)
+def page_not_found():
+    response = jsonify({'error': 'Error, Server currently down, please restart the server to use the bucketlist API'})
+    response.status_code = 500
+    return response
+
+
 # user registration method
 @app.route('/bucketlist/api/v1/auth/register', methods=['POST'])
 def register():
