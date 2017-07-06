@@ -36,13 +36,13 @@ class AuthenticationTestCases(unittest.TestCase):
     def test_register_without_password(self):
         payload = json.dumps({'username': 'scott', 'password': ''})
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
 
     # tests register with special characters
     def test_register_with_special_characters(self):
         payload = json.dumps({'username': '33s>^6?cot@@t', 'password': 'something'})
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
 
     # tests register without username
     def register_without_username(self):
@@ -62,7 +62,7 @@ class AuthenticationTestCases(unittest.TestCase):
     def test_register_with_short_password(self):
         payload = json.dumps({'username': '', 'password': 'me'})
         response = self.app.post('/bucketlist/api/v1/auth/register', data=payload)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
 
     # tests register with invalid username
     def test_login__with_invalid_username(self):
