@@ -70,13 +70,13 @@ def register():
 
         if len(pass_word) < 6:
             response = jsonify({'Error': 'Password is too short, it must be more than 6 characters'})
-            response.status_code = 401
+            response.status_code = 400
             return response
 
         # regex pattern below matches alphanumeric characters
         if not re.match("^[a-zA-Z0-9_]*$", name):
             response = jsonify({'error': 'Username cannot contain special characters'})
-            response.status_code = 401
+            response.status_code = 400
             return response
 
         res = Users.query.all()
@@ -210,12 +210,6 @@ def retrieve_bucketlist():
         response.status_code = 200
         return response
     else:
-        # limit = int(request.args.get("limit", 20))
-        # if limit > 100:
-        #     limit = 100
-        #     response = jsonify({'error': 'Bucketlist maximum limit is 100'})
-        #     response.status_code = 400
-
         search = request.args.get("q", "")
         if search:
             res = [bucket for bucket in respons if bucket.name in search and bucket.created_by in user_id]
