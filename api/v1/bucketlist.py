@@ -40,7 +40,7 @@ def page_not_found():
 
 # 405 error handler
 @app.errorhandler(405)
-def method_not_allowed(e):
+def method_not_allowed():
     response = jsonify({'error': 'Invalid request method. Please check the request method being used'})
     response.status_code = 405
     return response
@@ -48,9 +48,17 @@ def method_not_allowed(e):
 
 # 500 error handler
 @app.errorhandler(500)
-def page_not_found():
-    response = jsonify({'error': 'Error, Server currently down, please restart the server to use the bucketlist API'})
+def internal_server_error():
+    response = jsonify({'error': 'Error, Unauthorized to use the bucketlist API'})
     response.status_code = 500
+    return response
+
+
+# 401 error handler
+@app.errorhandler(401)
+def internal_server_error():
+    response = jsonify({'error': 'Error, Server currently down, please restart the server to use the bucketlist API'})
+    response.status_code = 401
     return response
 
 
@@ -204,7 +212,7 @@ def retrieve_bucketlist():
     limit = int(request.args.get("limit", 20))
     if limit > 100:
         limit = 100
-    respons = BucketList.query.limit(limit).all()
+    respons = BucketList1.query.limit(limit).all()
     if not respons:
         response = jsonify({'error': 'No bucketlist has been created'})
         response.status_code = 200
