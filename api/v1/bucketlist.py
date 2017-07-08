@@ -32,7 +32,7 @@ databases.create_all()
 
 # 404 error handler
 @app.errorhandler(404)
-def page_not_found():
+def page_not_found(e):
     response = jsonify({'error': 'The request can not be linked to, Please check your endpoint url'})
     response.status_code = 404
     return response
@@ -43,6 +43,22 @@ def page_not_found():
 def method_not_allowed(e):
     response = jsonify({'error': 'Invalid request method. Please check the request method being used'})
     response.status_code = 405
+    return response
+
+
+# 401 error handler
+@app.errorhandler(401)
+def internal_server_error(e):
+    response = jsonify({"error": "Token is invalid"})
+    response.status_code = 401
+    return response
+
+
+# 500 error handler
+@app.errorhandler(500)
+def internal_server_error(e):
+    response = jsonify({'error': 'Error, Server currently down, please restart the server to use the bucketlist API'})
+    response.status_code = 500
     return response
 
 
@@ -62,13 +78,13 @@ def register():
 
         if len(pass_word) < 6:
             response = jsonify({'Error': 'Password is too short, it must be more than 6 characters'})
-            response.status_code = 401
+            response.status_code = 400
             return response
 
         # regex pattern below matches alphanumeric characters
         if not re.match("^[a-zA-Z0-9_]*$", name):
             response = jsonify({'error': 'Username cannot contain special characters'})
-            response.status_code = 401
+            response.status_code = 400
             return response
 
         res = Users.query.all()
@@ -112,7 +128,7 @@ def login():
             response.status_code = 400
             return response
 
-        res = Users.query.all()
+        res = Users.query.filter_by(username=name)
         user_name_check = [user.username for user in res if user.verify_password(pass_word) is True]
         user_id = [user.id for user in res if name in user_name_check]
 
@@ -196,18 +212,12 @@ def retrieve_bucketlist():
     limit = int(request.args.get("limit", 20))
     if limit > 100:
         limit = 100
-    respons = BucketList.query.limit(limit).all()
+    respons = BucketList.query.all()
     if not respons:
         response = jsonify({'error': 'No bucketlist has been created'})
         response.status_code = 200
         return response
     else:
-        # limit = int(request.args.get("limit", 20))
-        # if limit > 100:
-        #     limit = 100
-        #     response = jsonify({'error': 'Bucketlist maximum limit is 100'})
-        #     response.status_code = 400
-
         search = request.args.get("q", "")
         if search:
             res = [bucket for bucket in respons if bucket.name in search and bucket.created_by in user_id]
