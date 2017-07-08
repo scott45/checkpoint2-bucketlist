@@ -46,19 +46,19 @@ def method_not_allowed(e):
     return response
 
 
-# 500 error handler
-@app.errorhandler(500)
-def internal_server_error(e):
-    response = jsonify({'error': 'Error, Unauthorized to use the bucketlist API'})
-    response.status_code = 500
-    return response
-
-
 # 401 error handler
 @app.errorhandler(401)
 def internal_server_error(e):
-    response = jsonify({'error': 'Error, Server currently down, please restart the server to use the bucketlist API'})
+    response = jsonify({"error": "Token is invalid"})
     response.status_code = 401
+    return response
+
+
+# 500 error handler
+@app.errorhandler(500)
+def internal_server_error(e):
+    response = jsonify({'error': 'Error, Server currently down, please restart the server to use the bucketlist API'})
+    response.status_code = 500
     return response
 
 
