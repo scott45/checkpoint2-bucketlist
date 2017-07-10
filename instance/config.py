@@ -23,6 +23,7 @@ class DevelopmentEnvironment(MainConfiguration):
 class ProductionEnvironment(MainConfiguration):
     DEBUG = False
     TESTING = False
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 
 # Dictionary with keys mapping to the different configuration environments
