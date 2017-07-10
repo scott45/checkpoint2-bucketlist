@@ -1,1 +1,1 @@
-web: gunicorn api:app --log-file=-
+web: gunicorn bucketlistv1:app --log-file=-
