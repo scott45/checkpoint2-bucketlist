@@ -1,6 +1,26 @@
 import os
 
 
+def db(current=None):
+    if current is None:
+        current = 'sqlite'
+
+    dbase = {
+        "sqlite": {
+            'test': 'sqlite:///testing_db',
+            'develop': 'sqlite:///bucketlist_db'
+        },
+
+        "postgres": {
+            'test': 'postgresql://@localhost/testing_db',
+            'develop': 'postgresql://postgres:root@localhost/bucketlist_db'
+
+        }
+
+    }
+    return dbase[current]
+
+
 class MainConfiguration(object):
     DEBUG = False
     WTF_CSRF_ENABLED = True
@@ -11,19 +31,18 @@ class MainConfiguration(object):
 class TestingEnvironment(MainConfiguration):
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://@localhost/testing_db'
+    SQLALCHEMY_DATABASE_URI = db()['test']
 
 
 class DevelopmentEnvironment(MainConfiguration):
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://@localhost/bucketlist_db'
+    SQLALCHEMY_DATABASE_URI = db()['develop']
 
 
 class ProductionEnvironment(MainConfiguration):
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 
 # Dictionary with keys mapping to the different configuration environments
