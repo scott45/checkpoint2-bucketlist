@@ -12,6 +12,8 @@ functionality (Create, Read, Update, Delete) operations on the bucket list.
 
 >A project done in fulfillment of the second checkpoint of the Andela training program.
 
+>The API live documentation can be found here; https://scott45.github.io/slate/#introduction-to-bucketlist-api
+
 # Project description
 
 Brief highlights about the following concepts is necessary:
