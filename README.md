@@ -12,6 +12,8 @@ functionality (Create, Read, Update, Delete) operations on the bucket list.
 
 >A project done in fulfillment of the second checkpoint of the Andela training program.
 
+>The API is hosted live on AWS; http://35.160.201.56:4444/
+
 >The API live documentation can be found here; https://scott45.github.io/slate/#introduction-to-bucketlist-api
 
 # Project description
