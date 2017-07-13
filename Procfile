@@ -1,1 +1,1 @@
-web: gunicorn bucketlistv1:app --log-file=-
+web: gunicorn run:app --preload
