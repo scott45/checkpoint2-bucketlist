@@ -62,6 +62,15 @@ def internal_server_error(e):
     return response
 
 
+@app.route('/')
+def homepage():
+    """ The homepage route
+    :return: A welcome message
+    """
+    from flask import render_template
+    return render_template('index.html')
+
+
 # user registration method
 @app.route('/bucketlist/api/v1/auth/register', methods=['POST'])
 def register():
