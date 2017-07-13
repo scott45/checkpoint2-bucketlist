@@ -9,6 +9,7 @@ from flask import jsonify, request, abort
 
 from api.__init__ import app, databases
 from api.v1.models import Users, BucketList, Items
+from flask import render_template
 
 databases.create_all()
 
@@ -67,7 +68,6 @@ def homepage():
     """ The homepage route
     :return: A welcome message
     """
-    from flask import render_template
     return render_template('index.html')
 
 
