@@ -13,7 +13,7 @@ def db(current=None):
 
         "postgres": {
             'test': 'postgresql://@localhost/testing_db',
-            'develop': 'postgresql://postgres:root@localhost/bucketlist_db'
+            'develop': 'postgres://pqupzaysfztwij:af1e861efc1bd274966bfe856d378725aa31e4f1205790d70586935bfc8a91ff@ec2-23-21-96-159.compute-1.amazonaws.com:5432/d73kd3chhjbd6p'
 
         }
 
