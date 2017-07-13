@@ -12,7 +12,12 @@ functionality (Create, Read, Update, Delete) operations on the bucket list.
 
 >A project done in fulfillment of the second checkpoint of the Andela training program.
 
->The API is hosted live on AWS; http://35.160.201.56:4444/
+>The API is hosted live on Amazon Web Services (AWS); http://35.160.201.56:4444/
+
+>The API is hosted live on Heroku; https://herokubucketlist.herokuapp.com/
+
+>Any other operation just requires to add on bucketlist endpoints. 
+To have a great expereince using the API, I recommend you use API consuming platforms like Postman or hurl (https://www.hurl.it/) which works online
 
 >The API live documentation can be found here; https://scott45.github.io/slate/#introduction-to-bucketlist-api
 
