@@ -64,7 +64,7 @@ Yet another acronym, JSON which stands for **J**avascript **O**bject **N**otatio
 
 ## Installation
  
-Clone the GitHub repo:
+Clone the GitHub repo with the following command:
  
 http:
 >`$ git clone https://github.com/scott45/checkpoint2-bucketlist.git`
