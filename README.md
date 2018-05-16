@@ -133,7 +133,7 @@ DELETE bucketlist/app/v1/bucketlists/id/items/item_id | Deletes an item in a buc
 delete
 ![alt text](screenshots/delete.png)
 
-### Searching
+### Searching (querying results)
 
 Functionality to search bucketlists using the parameter `q` in the GET request is enabled. 
 Example:
