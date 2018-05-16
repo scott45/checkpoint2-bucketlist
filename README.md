@@ -146,7 +146,7 @@ This request will return all bucketlists with `whatever` in their name
 After a successful resgistration and login, you will receive an athentication token. Pass this token in your request header.
 Below is a sample of a GET request for bucketlist
 
-### Testing
+### Runing Tests
 The application tests are based on python’s unit testing framework unittest.
 To run tests with nose, run `nosetests`
 
