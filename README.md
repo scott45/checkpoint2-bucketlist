@@ -6,7 +6,7 @@
 # Liste des seaux : A Bucketlist API
 
 
-## Introduction
+## Introduction;
 A Bucket List is a list of things that one has not done but wishes to accomplish before their demise. Liste des seauxis is the french word for bucketlist. It enables CRUD
 functionality (Create, Read, Update, Delete) operations on the bucket list.
 
