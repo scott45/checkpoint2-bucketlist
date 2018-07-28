@@ -150,7 +150,7 @@ Below is a sample of a GET request for bucketlist
 The application tests are based on python’s unit testing framework unittest.
 To run tests with nose, run `nosetests`
 
-## Credits
+## Credits (Best practices)
 
 1. [Businge Scott](https://github.com/scott45)
 
