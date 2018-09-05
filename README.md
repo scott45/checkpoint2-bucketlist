@@ -27,7 +27,7 @@ Brief highlights about the following concepts is necessary:
 
  - API
 
- >REST
+ - REST
 
  >JSON
 
