@@ -29,7 +29,7 @@ Brief highlights about the following concepts is necessary:
 
  - REST
 
- >JSON
+ - JSON
 
 **API**
 
