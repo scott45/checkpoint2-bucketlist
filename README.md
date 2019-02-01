@@ -25,11 +25,11 @@ To have a great expereince using the API, I recommend you use API consuming plat
 
 Brief highlights about the following concepts is necessary:
 
- - API
+ - API.
 
- - REST
+ - REST.
 
- - JSON
+ - JSON.
 
 **API**
 
