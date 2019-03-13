@@ -39,7 +39,7 @@ An **API**, acronym for Application Programming Interface, provides a blueprint 
 
 REST is an acronym that stands for **RE**presentational **S**tate **T**ransfer and has become the de-facto way of building API's and thus API's using this standard are known as RESTFul API's. The five main principles the implementation of REST and RESTFulness are:
 
->Everything is a resource.
+>Everything is a resource
 
 >Every resource has a unique identifier.
 
